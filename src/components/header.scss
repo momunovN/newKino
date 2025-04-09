@@ -1,17 +1,72 @@
-.header{
+.header {
     background-color: red;
 }
 
 
-.btn-login{
+.btn-login {
     border: none;
     background: none;
     color: white;
 }
 
-.logo-logIn{
+.logo-logIn {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 40px;
+}
+
+
+.filters {
+    display: flex;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+
+
+    .select-genres {
+        -webkit-appearance: none;
+        /* Убирает стандартную стрелку в Chrome/Safari */
+        -moz-appearance: none;
+        /* Убирает стандартную стрелку в Firefox */
+        appearance: none;
+        /* Убирает стандартную стрелку в современных браузерах */
+        background-image: none;
+        /* Убирает стрелку в IE */
+        width: 100%;
+        height: 50px;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px;
+        
+
+        &:focus{
+            outline: none;
+        }
+
+        &{
+            color: #343B4C;
+            font-size: 18px;
+            font-family: Fira Sans;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+
+
+        .option-genres {
+            color: #343B4C;
+            font-size: 18px;
+            font-family: Fira Sans;
+            font-weight: 400;
+            line-height: 38px;
+            word-wrap: break-word;
+        }
+    }
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
 }

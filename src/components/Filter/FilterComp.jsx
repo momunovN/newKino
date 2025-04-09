@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import '../header.scss'
+
 
 const MovieFilter = ({ 
   genres, 
@@ -25,10 +27,11 @@ const MovieFilter = ({
           id="genre"
           value={localGenre}
           onChange={(e) => setLocalGenre(e.target.value)}
+          className="select-genres"
         >
-          <option value="">Все жанры</option>
+          <option value="" className="">Все жанры</option>
           {genres.map((genre) => (
-            <option key={genre.id} value={genre.genre}>
+            <option key={genre.id} value={genre.genre} className="option-genres">
               {genre.genre}
             </option>
           ))}
