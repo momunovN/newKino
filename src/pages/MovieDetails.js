@@ -27,6 +27,8 @@ export default function MovieDetails() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Create a unique booking object
     const booking = {
       ...formData,
       movie: {
@@ -35,7 +37,24 @@ export default function MovieDetails() {
         date: new Date().toLocaleString()
       }
     };
-    setBookings(prev => [...prev, booking]);
+  
+    // Check if the booking already exists
+    setBookings(prev => {
+      const isDuplicate = prev.some(b => 
+        b.movie.id === booking.movie.id && 
+        b.name === booking.name && 
+        b.email === booking.email && 
+        b.seats === booking.seats
+      );
+  
+      if (isDuplicate) {
+        alert("Вы уже забронировали этот фильм.");
+        return prev; // Do not add the duplicate booking
+      }
+  
+      return [...prev, booking]; // Add the new booking
+    });
+  
     navigate('/history');
   };
 

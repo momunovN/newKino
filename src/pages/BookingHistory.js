@@ -17,8 +17,8 @@ export default function BookingHistory() {
         <div className="bookings-list">
           {bookings.map((booking, index) => (
             <div key={index} className="booking-card">
-              <h3>{booking.movie.title}</h3>
-              <p>Дата: {booking.movie.date}</p>
+              <h3>{booking.movie ? booking.movie.title : 'Неизвестный фильм'}</h3>
+              <p>Дата: {booking.movie ? booking.movie.date : 'Нет информации'}</p>
               <p>Имя: {booking.name}</p>
               <p>Email: {booking.email}</p>
               <p>Места: {booking.seats}</p>

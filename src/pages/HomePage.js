@@ -9,7 +9,7 @@ const HomePage = () => {
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
@@ -72,14 +72,15 @@ const HomePage = () => {
   useEffect(() => {
     let result = [...movies];
 
+    // Filter by selected genre
     if (selectedGenre) {
       result = result.filter(movie => 
         movie.genres && movie.genres.some(genre => genre.genre === selectedGenre)
       );
     }
 
-    // Show at least 12 movies initially
-    const initialCount = Math.max(12, result.length);
+    // Show at least 9 movies initially
+    const initialCount = Math.min(9, result.length); // Show 9 movies initially
     setDisplayedMovies(result.slice(0, initialCount));
   }, [selectedGenre, movies]);
 
@@ -91,7 +92,7 @@ const HomePage = () => {
 
   const showMoreFiltered = () => {
     setDisplayedMovies(prev => {
-      const newCount = prev.length + 3;
+      const newCount = prev.length + 3; // Show 3 more movies
       const filtered = applyFilters();
       return filtered.slice(0, newCount);
     });
@@ -100,9 +101,18 @@ const HomePage = () => {
   const applyFilters = () => {
     let result = [...movies];
 
+    // Filter by selected genre
     if (selectedGenre) {
       result = result.filter(movie => 
         movie.genres && movie.genres.some(genre => genre.genre === selectedGenre)
+      );
+    }
+
+    // If keyword is not empty, filter by keyword
+    if (keyword) {
+      result = result.filter(movie => 
+        movie.nameRu.toLowerCase().includes(keyword.toLowerCase()) || 
+        movie.nameEn.toLowerCase().includes(keyword.toLowerCase())
       );
     }
 
@@ -163,11 +173,6 @@ const HomePage = () => {
         {canShowMore && !isLoading && (
           <button onClick={showMoreFiltered} className="load-more-button">
             Показать еще 3 фильма
-          </button>
-        )}
-        {hasMore && !canShowMore && !isLoading && (
-          <button onClick={loadMore} className="load-more-button">
-            Загрузить больше фильмов
           </button>
         )}
       </div>
