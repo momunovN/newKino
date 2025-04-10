@@ -6,9 +6,25 @@ import '../App.css';
 export default function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [video, setVideo] = useState(null);
   const [movie, setMovie] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', seats: 1 });
   const { setBookings } = useContext(BookingContext);
+
+  useEffect(() => {
+    const fetchVideo = async () => {
+      const response = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films/${id}/videos`, {
+        headers: {
+          'X-API-KEY': '31b8142c-7c84-42d7-ba58-c5866aa1bc7b',
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      setVideo(data);
+    };
+
+    fetchVideo();
+  }, [id]);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -28,7 +44,6 @@ export default function MovieDetails() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Create a unique booking object
     const booking = {
       ...formData,
       movie: {
@@ -38,7 +53,6 @@ export default function MovieDetails() {
       }
     };
   
-    // Check if the booking already exists
     setBookings(prev => {
       const isDuplicate = prev.some(b => 
         b.movie.id === booking.movie.id && 
@@ -49,10 +63,10 @@ export default function MovieDetails() {
   
       if (isDuplicate) {
         alert("Вы уже забронировали этот фильм.");
-        return prev; // Do not add the duplicate booking
+        return prev; // Не добавляйте дублирующее бронирование
       }
   
-      return [...prev, booking]; // Add the new booking
+      return [...prev, booking]; // Добавить новое бронирование
     });
   
     navigate('/history');
@@ -73,6 +87,29 @@ export default function MovieDetails() {
         <p>Время: {movie.filmLength} минут</p>
         <p>Возраст: {movie.ratingAgeLimits || 'Нет информации'}</p>
         
+        {/* Отображение видео */}
+        <div className="video-section">
+          <h2>Трейлеры и видео</h2>
+          {video && video.items && video.items.length > 0 ? (
+            video.items.map((item, index) => (
+              <div key={index} className="video-item">
+                <h3>{item.name}</h3>
+                {item.site === 'YOUTUBE' && (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">Смотреть на YouTube</a>
+                )}
+                {item.site === 'YANDEX_DISK' && (
+                  <a href={item.url} target="_blank " rel="noopener noreferrer">Смотреть на Yandex Disk</a>
+                )}
+                {item.site === 'KINOPOISK_WIDGET' && (
+                  <iframe is="x-frame-bypass" src={item.url} width="500" height="500" title={item.name}></iframe>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>Нет доступных видео для этого фильма.</p>
+          )}
+        </div>
+
         <form onSubmit={handleSubmit} className="booking-form">
           <h2>Бронирование билетов</h2>
           <input
