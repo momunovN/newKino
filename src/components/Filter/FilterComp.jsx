@@ -46,6 +46,7 @@ const MovieFilter = ({
           value={localKeyword}
           onChange={(e) => setLocalKeyword(e.target.value)}
           placeholder="Введите ключевое слово"
+          className="filter-search"
         />
       </div>
 
@@ -56,4 +57,4 @@ const MovieFilter = ({
   );
 };
 
-export default MovieFilter;
+export default MovieFilter; 
