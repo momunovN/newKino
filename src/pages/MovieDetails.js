@@ -9,7 +9,7 @@ export default function MovieDetails() {
   const [video, setVideo] = useState(null);
   const [movie, setMovie] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', seats: 1 });
-  const { setBookings } = useContext(BookingContext);
+  const { addBooking } = useContext(BookingContext);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -41,35 +41,21 @@ export default function MovieDetails() {
     fetchMovie();
   }, [id]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const booking = {
-      ...formData,
-      movie: {
-        id: movie.kinopoiskId,
-        title: movie.nameRu,
-        date: new Date().toLocaleString()
-      }
+    const bookingData = {
+      movieId: movie.kinopoiskId,
+      title: movie.nameRu,
+      seats: formData.seats
     };
-  
-    setBookings(prev => {
-      const isDuplicate = prev.some(b => 
-        b.movie.id === booking.movie.id && 
-        b.name === booking.name && 
-        b.email === booking.email && 
-        b.seats === booking.seats
-      );
-  
-      if (isDuplicate) {
-        alert("Вы уже забронировали этот фильм.");
-        return prev; // Не добавляйте дублирующее бронирование
-      }
-  
-      return [...prev, booking]; // Добавить новое бронирование
-    });
-  
-    navigate('/history');
+    
+    const success = await addBooking(bookingData);
+    if (success) {
+      navigate('/history');
+    } else {
+      alert('Ошибка при бронировании. Пожалуйста, войдите в систему.');
+    }
   };
 
   if (!movie) return <div>Загрузка...</div>;
