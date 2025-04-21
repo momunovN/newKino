@@ -2,7 +2,7 @@
 const API_URL = 'http://localhost:5000/api';
 
 export const register = async (email, password) => {
-  const response = await fetch(`${API_URL}/register`, {
+  const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
@@ -11,7 +11,7 @@ export const register = async (email, password) => {
 };
 
 export const login = async (email, password) => {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
