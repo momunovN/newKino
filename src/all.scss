@@ -1,0 +1,33 @@
+.back-button{
+    width: fit-content;
+    height: 30px;   
+    padding: 10px  10px  ;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    border: none;
+    position: relative;
+    
+}
+.back-image{
+    display: flex;
+ 
+    
+    .detail-poster{
+        width: 500px;
+
+    }
+}
+
+.movie-details{
+    max-width: 1440px;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.detailes-item{
+    display: flex;
+    gap: 50px;
+}
