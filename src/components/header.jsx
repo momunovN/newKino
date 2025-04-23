@@ -23,6 +23,7 @@ const Header = () => {
           <img src="" alt="" />
           KINO
         </div>
+        
 
         {user ? (
           <div className="user-info">

@@ -10,10 +10,12 @@
 }
 
 .logo-logIn {
+    max-width: 1440px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 40px;
+    margin: 0 auto;
 }
 
 
@@ -93,5 +95,5 @@
     width: 100px;
     height: 40px;
     border-radius: 8px;
-
+    border: none;
 }

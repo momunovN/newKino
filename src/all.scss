@@ -31,3 +31,40 @@
     display: flex;
     gap: 50px;
 }
+
+
+.history-link{
+    text-decoration: none;
+    color: white;
+    border: 10px;
+}
+
+.btn-history{
+    height: 40px;
+    background-color: red;
+    border: none;
+    width: 150px;
+    border-radius: 8px;
+}
+
+.title-main{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.load-more-button{
+    width: 150px;
+    height: 40px;
+}
+
+.load-more-container{
+    display: flex;
+    gap: 20px;
+}
+
+.App{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}

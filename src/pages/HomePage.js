@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+import "../all.scss";
 import { Link } from "react-router-dom";
 import MovieFilter from "../components/Filter/FilterComp";
 import "../server-API/movie.scss";
@@ -28,11 +30,11 @@ const HomePage = () => {
             },
           }
         );
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setGenres(data.genres);
       } catch (error) {
@@ -49,10 +51,12 @@ const HomePage = () => {
     const fetchMovies = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        let url = new URL("https://kinopoiskapiunofficial.tech/api/v2.2/films/collections");
-        
+        let url = new URL(
+          "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections"
+        );
+
         // Базовые параметры
         // url.searchParams.append("order", "RATING");
         // url.searchParams.append("type", "FILM");
@@ -84,9 +88,11 @@ const HomePage = () => {
         }
 
         const data = await response.json();
-        
+
         if (data.items && data.items.length > 0) {
-          setMovies(prev => currentPage === 1 ? data.items : [...prev, ...data.items]);
+          setMovies((prev) =>
+            currentPage === 1 ? data.items : [...prev, ...data.items]
+          );
           setHasMore(data.totalPages > currentPage);
         } else {
           setHasMore(false);
@@ -109,33 +115,39 @@ const HomePage = () => {
 
     // Filter by keyword if applied
     if (keyword && isFilterApplied) {
-      result = result.filter(movie => 
-        (movie.nameRu && movie.nameRu.toLowerCase().includes(keyword.toLowerCase())) || 
-        (movie.nameEn && movie.nameEn.toLowerCase().includes(keyword.toLowerCase())) ||
-        (movie.nameOriginal && movie.nameOriginal.toLowerCase().includes(keyword.toLowerCase()))
+      result = result.filter(
+        (movie) =>
+          (movie.nameRu &&
+            movie.nameRu.toLowerCase().includes(keyword.toLowerCase())) ||
+          (movie.nameEn &&
+            movie.nameEn.toLowerCase().includes(keyword.toLowerCase())) ||
+          (movie.nameOriginal &&
+            movie.nameOriginal.toLowerCase().includes(keyword.toLowerCase()))
       );
     }
 
     // Filter by selected genre if applied
     if (selectedGenre) {
-      result = result.filter(movie => 
-        movie.genres && movie.genres.some(genre => genre.genre === selectedGenre)
+      result = result.filter(
+        (movie) =>
+          movie.genres &&
+          movie.genres.some((genre) => genre.genre === selectedGenre)
       );
     }
 
     // Show initial set of movies
-    const initialCount = Math.min(9, result.length);
+    const initialCount = Math.min(3, result.length);
     setDisplayedMovies(result.slice(0, initialCount));
   }, [movies, selectedGenre, keyword, isFilterApplied]);
 
   const loadMore = () => {
     if (hasMore && !isLoading) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const showMoreFiltered = () => {
-    setDisplayedMovies(prev => {
+    setDisplayedMovies((prev) => {
       const newCount = prev.length + 3;
       const filtered = applyFilters();
       return filtered.slice(0, newCount);
@@ -146,16 +158,22 @@ const HomePage = () => {
     let result = [...movies];
 
     if (selectedGenre) {
-      result = result.filter(movie => 
-        movie.genres && movie.genres.some(genre => genre.genre === selectedGenre)
+      result = result.filter(
+        (movie) =>
+          movie.genres &&
+          movie.genres.some((genre) => genre.genre === selectedGenre)
       );
     }
 
     if (keyword) {
-      result = result.filter(movie => 
-        (movie.nameRu && movie.nameRu.toLowerCase().includes(keyword.toLowerCase())) || 
-        (movie.nameEn && movie.nameEn.toLowerCase().includes(keyword.toLowerCase())) ||
-        (movie.nameOriginal && movie.nameOriginal.toLowerCase().includes(keyword.toLowerCase()))
+      result = result.filter(
+        (movie) =>
+          (movie.nameRu &&
+            movie.nameRu.toLowerCase().includes(keyword.toLowerCase())) ||
+          (movie.nameEn &&
+            movie.nameEn.toLowerCase().includes(keyword.toLowerCase())) ||
+          (movie.nameOriginal &&
+            movie.nameOriginal.toLowerCase().includes(keyword.toLowerCase()))
       );
     }
 
@@ -172,13 +190,19 @@ const HomePage = () => {
 
   return (
     <div className="App">
-      <h1>Фильмы</h1>
-      <nav>
-        <Link to="/history" className="history-link">
-          История бронирований
-        </Link>
-      </nav>
-      
+      <div className="title-main">
+        <h1>Фильмы</h1>
+        <nav>
+          <button className="btn-history">
+            <Link to="/history" className="history-link">
+              История бронирований
+            </Link>
+          </button>
+        </nav>
+      </div>
+
+
+
       <MovieFilter
         genres={genres}
         selectedGenre={selectedGenre}
@@ -191,30 +215,46 @@ const HomePage = () => {
       {error && <div className="error-message">{error}</div>}
 
       <div className="movies-container">
-        {displayedMovies.length > 0 ? (
-          displayedMovies.map((movie) => (
-            <div key={movie.kinopoiskId || movie.filmId} className="movie-card">
-              <img
-                src={movie.posterUrl}
-                alt={movie.nameRu || movie.nameEn || movie.nameOriginal || "Movie poster"}
-                className="movie-poster"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/300x450?text=No+Poster';
-                }}
-              />
-              <div className="movie-info">
-                <h2>{movie.nameRu || movie.nameEn || movie.nameOriginal}</h2>
-                <p>Год: {movie.year}</p>
-                {movie.genres && <p>Жанр: {movie.genres.map(g => g.genre).join(", ")}</p>}
-                <Link to={`/movie/${movie.kinopoiskId || movie.filmId}`} className="book-button">
-                  Бронировать
-                </Link>
+        {displayedMovies.length > 0
+          ? displayedMovies.map((movie) => (
+              <div
+                key={movie.kinopoiskId || movie.filmId}
+                className="movie-card"
+              >
+                <img
+                  src={movie.posterUrl}
+                  alt={
+                    movie.nameRu ||
+                    movie.nameEn ||
+                    movie.nameOriginal ||
+                    "Movie poster"
+                  }
+                  className="movie-poster"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/300x450?text=No+Poster";
+                  }}
+                />
+                <div className="movie-info">
+                  <h2>{movie.nameRu || movie.nameEn || movie.nameOriginal}</h2>
+                  <p>Год: {movie.year}</p>
+                  {movie.genres && (
+                    <p>Жанр: {movie.genres.map((g) => g.genre).join(", ")}</p>
+                  )}
+                  <Link
+                    to={`/movie/${movie.kinopoiskId || movie.filmId}`}
+                    className="book-button"
+                  >
+                    Бронировать
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          !isLoading && <div className="no-results">Нет фильмов, соответствующих критериям поиска</div>
-        )}
+            ))
+          : !isLoading && (
+              <div className="no-results">
+                Нет фильмов, соответствующих критериям поиска
+              </div>
+            )}
       </div>
 
       <div className="load-more-container">
