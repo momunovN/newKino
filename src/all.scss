@@ -61,10 +61,81 @@
 .load-more-container{
     display: flex;
     gap: 20px;
+
+
+    .load-more-button{
+        border-radius: 8px;
+        background-color: white;
+        border: none;
+
+        &:hover{
+            animation: ButtonHover  0.2s ease forwards;;
+            
+            .book-button{
+                color: black;
+            }
+        }
+    }
 }
 
 .App{
     display: flex;
     flex-direction: column;
     gap: 40px;
+}
+
+.ticket-btn{
+    border: none;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    transition: ButtonHover 0.2s ease;
+
+    border-radius: 8px;
+    .book-button{
+
+        text-decoration: none;
+    }
+
+
+    &:hover{
+        animation: ButtonHover  0.2s ease forwards;;
+        
+        .book-button{
+            color: black;
+        }
+
+    }
+}
+
+@keyframes ButtonHover{
+    0%{
+        background-color: red;
+        opacity: 0.1;
+
+    }
+    25%{
+        background-color: red;
+        opacity: 0.3;
+    }
+    55%{
+        background-color: red;
+        opacity: 0.5;
+    }
+    75%{
+        background-color: red;
+        opacity: 0.7;
+    }
+    100%{
+        background-color: red ;
+               opacity: 1;
+    }
+
+}
+
+
+
+.link-btn{
+    text-decoration: none;
+    color: white;
 }

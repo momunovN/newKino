@@ -149,7 +149,7 @@ export default function MovieDetails() {
                 setFormData({ ...formData, name: e.target.value })
               }
             />
-            <input
+           {/* { <input
               type="email"
               placeholder="Email"
               required
@@ -157,7 +157,7 @@ export default function MovieDetails() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-            />
+            />} */}
             <input
               type="number"
               min="1"

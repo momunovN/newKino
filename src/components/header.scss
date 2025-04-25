@@ -1,3 +1,7 @@
+@import url(../all.scss);
+
+
+
 .header {
     background-color: red;
 }
@@ -61,6 +65,14 @@
         border-radius: 8px;
         height: 40px;
 
+        &:hover{
+            animation: ButtonHover  0.2s ease forwards;;
+            
+            .book-button{
+                color: black;
+            }
+        }
+
         &:focus {
             outline: none;
         }
@@ -81,6 +93,8 @@
             font-weight: 400;
             line-height: 38px;
             word-wrap: break-word;
+
+            
         }
     }
 }
@@ -96,4 +110,13 @@
     height: 40px;
     border-radius: 8px;
     border: none;
+
+
+    &:hover{
+        animation: ButtonHover  0.2s ease forwards;;
+        
+        .book-button{
+            color: black;
+        }
+    }
 }

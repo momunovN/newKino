@@ -194,14 +194,12 @@ const HomePage = () => {
         <h1>Фильмы</h1>
         <nav>
           <button className="btn-history">
-            <Link to="/history" className="history-link">
+            <Link className="link-btn" to="/history" >
               История бронирований
             </Link>
           </button>
         </nav>
       </div>
-
-
 
       <MovieFilter
         genres={genres}
@@ -221,32 +219,38 @@ const HomePage = () => {
                 key={movie.kinopoiskId || movie.filmId}
                 className="movie-card"
               >
-                <img
-                  src={movie.posterUrl}
-                  alt={
-                    movie.nameRu ||
-                    movie.nameEn ||
-                    movie.nameOriginal ||
-                    "Movie poster"
-                  }
-                  className="movie-poster"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/300x450?text=No+Poster";
-                  }}
-                />
+                <Link className="link-btn" to={`/movie/${movie.kinopoiskId || movie.filmId}`}>
+                  <img
+                    src={movie.posterUrl}
+                    alt={
+                      movie.nameRu ||
+                      movie.nameEn ||
+                      movie.nameOriginal ||
+                      "Movie poster"
+                    }
+                    className="movie-poster"
+                    onError={(e) => {
+                      e.target.src =
+                        "https://via.placeholder.com/300x450?text=No+Poster";
+                    }}
+                  />
+                </Link>
                 <div className="movie-info">
+                <Link className="link-btn" to={`/movie/${movie.kinopoiskId || movie.filmId}`}>
                   <h2>{movie.nameRu || movie.nameEn || movie.nameOriginal}</h2>
+                </Link>
                   <p>Год: {movie.year}</p>
                   {movie.genres && (
                     <p>Жанр: {movie.genres.map((g) => g.genre).join(", ")}</p>
                   )}
-                  <Link
-                    to={`/movie/${movie.kinopoiskId || movie.filmId}`}
-                    className="book-button"
-                  >
-                    Бронировать
-                  </Link>
+                  <button className="ticket-btn">
+                    <Link 
+                      to={`/movie/${movie.kinopoiskId || movie.filmId}`}
+                      className="book-button"
+                    >
+                      Бронировать
+                    </Link>
+                  </button>
                 </div>
               </div>
             ))
