@@ -1,5 +1,5 @@
 // src/api.js
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://apinew-d6qv.onrender.com/api';
 
 export const register = async (email, password) => {
   const response = await fetch(`${API_URL}/auth/register`, {
