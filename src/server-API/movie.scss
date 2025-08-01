@@ -39,3 +39,19 @@
     font-size: 0.9em;
     color: #666;
   }
+
+
+
+
+  .movie-card:hover{
+
+    z-index: 1;
+    a{
+      img{
+        z-index: 2;
+       height: 140px;
+
+       
+      }
+    }
+  }

@@ -1,3 +1,9 @@
+
+body {
+  font-family: 'TT Norms Pro', sans-serif;
+  font-weight: 500;
+}
+
 .back-button{
     width: fit-content;
     height: 30px;   
@@ -11,11 +17,11 @@
 }
 .back-image{
     display: flex;
- 
+    
     
     .detail-poster{
-        width: 500px;
-
+        width: 400px;
+        height: 600px;
     }
 }
 
@@ -41,7 +47,7 @@
 
 .btn-history{
     height: 40px;
-    background-color: red;
+    background-color: rgba(255, 0, 0, 0.818);
     border: none;
     width: 150px;
     border-radius: 8px;
@@ -138,4 +144,95 @@
 .link-btn{
     text-decoration: none;
     color: white;
+}
+
+
+.mov-det-header{
+ 
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+}
+
+
+
+.detail-poster{
+    width: 100px;
+    height: 100%;
+}
+
+
+.tabs {
+  display: flex;
+  margin: 20px 0;
+      transition: all .3s ease;
+
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  position: relative;
+      transition: all .3s ease;
+
+  &:hover {
+    color: #ffffff;
+    transition: all .7s ease;
+
+  }
+  
+  &.active {
+    color: #ffffff;
+    font-weight: bold;
+    transition: all .3s ease;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #d11616;
+      border-radius: 2px;
+          transition: all .3s ease;
+
+    }
+  }
+}
+
+.tab-content {
+        transition: all .3s ease;
+
+  margin: 20px 0;
+  
+  .crew-section ul {
+    list-style: none;
+    padding: 0;
+        transition: all .3s ease;
+
+    li {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+
+  .description-section{
+    p{
+        width: 500px;
+    }
+  }
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  
+
+
+
+
 }

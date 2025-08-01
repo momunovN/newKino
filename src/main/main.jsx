@@ -8,6 +8,7 @@ import HomePage from "../pages/HomePage";
 const Main = () => {
   return (
     <main>
+      
       <header className="header ">
         <div className="container">
           <Header />
