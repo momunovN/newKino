@@ -12,6 +12,7 @@ export default function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ name: "", seats: 1 });
@@ -23,6 +24,7 @@ export default function MovieDetails() {
       try {
         setLoading(true);
 
+        // Fetch movie details
         const movieResponse = await fetch(
           `https://kinopoiskapiunofficial.tech/api/v2.2/films/${id}`,
           {
@@ -40,6 +42,23 @@ export default function MovieDetails() {
         const movieData = await movieResponse.json();
         setMovie(movieData);
 
+        // Fetch staff information
+        const staffResponse = await fetch(
+          `https://kinopoiskapiunofficial.tech/api/v1/staff?filmId=${id}`,
+          {
+            headers: {
+              "X-API-KEY": "31b8142c-7c84-42d7-ba58-c5866aa1bc7b",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!staffResponse.ok) {
+          throw new Error("Не удалось загрузить данные о съёмочной группе");
+        }
+
+        const staffData = await staffResponse.json();
+        setStaff(staffData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -49,6 +68,16 @@ export default function MovieDetails() {
 
     fetchData();
   }, [id]);
+
+  // Filter staff to get actors only
+  const actors = staff.filter(
+    (person) =>
+      person.professionKey === "ACTOR" || person.professionKey === "ACTRESS"
+  );
+
+  const directors = staff.filter(
+    (person) => person.professionKey === "DIRECTOR"
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,17 +139,21 @@ export default function MovieDetails() {
           </div>
           <div className="detail-info">
             <h1>{movie.nameRu || "Название не указано"}</h1>
-            
+
             {/* Табы */}
             <div className="tabs">
               <button
-                className={`tab-button ${activeTab === "description" ? "active" : ""}`}
+                className={`tab-button ${
+                  activeTab === "description" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("description")}
               >
                 Описание
               </button>
               <button
-                className={`tab-button ${activeTab === "about" ? "active" : ""}`}
+                className={`tab-button ${
+                  activeTab === "about" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("about")}
               >
                 О фильме
@@ -130,6 +163,14 @@ export default function MovieDetails() {
                 onClick={() => setActiveTab("crew")}
               >
                 Съёмочная группа
+              </button>
+              <button
+                className={`tab-button ${
+                  activeTab === "actors" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("actors")}
+              >
+                Актеры
               </button>
             </div>
 
@@ -151,12 +192,15 @@ export default function MovieDetails() {
                   </p>
                   <p>
                     Жанр:{" "}
-                    {movie.genres?.map((g) => g.genre).join(", ") || "Нет данных"}
+                    {movie.genres?.map((g) => g.genre).join(", ") ||
+                      "Нет данных"}
                   </p>
                   <p>Рейтинг: {movie.ratingKinopoisk || "Нет данных"}</p>
                   <p>
                     Время:{" "}
-                    {movie.filmLength ? `${movie.filmLength} минут` : "Нет данных"}
+                    {movie.filmLength
+                      ? `${movie.filmLength} минут`
+                      : "Нет данных"}
                   </p>
                   <p>
                     Возраст:{" "}
@@ -169,11 +213,12 @@ export default function MovieDetails() {
 
               {activeTab === "crew" && (
                 <div className="crew-section">
-                  {movie.staff && movie.staff.length > 0 ? (
+                  {staff.length > 0 ? (
                     <ul>
-                      {movie.staff.map((person) => (
+                      {staff.map((person) => (
                         <li key={person.staffId}>
-                          <strong>{person.nameRu || person.nameEn}</strong> - {person.professionText || person.professionKey}
+                          <strong>{person.nameRu || person.nameEn}</strong> -{" "}
+                          {person.professionText || person.professionKey}
                         </li>
                       ))}
                     </ul>
@@ -182,28 +227,62 @@ export default function MovieDetails() {
                   )}
                 </div>
               )}
-            </div>
 
+              {activeTab === "actors" && (
+                <div className="actors-section">
+                  {actors.length > 0 ? (
+                    <div className="actors-grid">
+                      {actors.map((actor) => (
+                        <div key={actor.staffId} className="actor-card">
+                          <img
+                            src={
+                              actor.posterUrl ||
+                              "https://via.placeholder.com/100x150?text=No+Photo"
+                            }
+                            alt={actor.nameRu || actor.nameEn}
+                            className="actor-photo"
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/100x150?text=No+Photo";
+                            }}
+                          />
+                          <div className="actor-info">
+                            <strong>{actor.nameRu || actor.nameEn}</strong>
+                            {actor.description && <p>{actor.description}</p>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>Информация об актерах отсутствует</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="container">
             <form onSubmit={handleSubmit} className="booking-form">
               <h2>Бронирование билетов</h2>
-              <input
-                type="text"
-                name="name"
-                placeholder="Ваше имя"
-                required
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-              <input
-                type="number"
-                name="seats"
-                min="1"
-                max="10"
-                placeholder="Количество мест"
-                required
-                value={formData.seats}
-                onChange={handleInputChange}
-              />
+              <div className="inp_form">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Ваше имя"
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                />
+                <input
+                  type="number"
+                  name="seats"
+                  min="1"
+                  max="10"
+                  placeholder="Количество мест"
+                  required
+                  value={formData.seats}
+                  onChange={handleInputChange}
+                />
+              </div>
               <button type="submit">Подтвердить бронь</button>
             </form>
           </div>

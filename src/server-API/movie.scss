@@ -17,6 +17,8 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    transition: all .1s;
   }
   
   .movie-poster {
@@ -42,16 +44,6 @@
 
 
 
-
-  .movie-card:hover{
-
-    z-index: 1;
-    a{
-      img{
-        z-index: 2;
-       height: 140px;
-
-       
-      }
-    }
-  }
+.movie-card:hover{
+  scale: 0.9;
+}

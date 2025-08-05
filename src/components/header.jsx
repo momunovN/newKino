@@ -29,7 +29,7 @@ const Header = () => {
             <Link to="/main" className="catalog">
               Главная
             </Link>
-            <Link to="/history" className="catalog">
+            <Link to="/films" className="catalog">
               Фильмы
             </Link>
 
