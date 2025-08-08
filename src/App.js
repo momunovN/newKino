@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate  } from "react-router-
 import Main from "./main/main";
 import MovieDetails from "./pages/MovieDetails";
 import BookingHistory from "./pages/BookingHistory";
+import MainPage from "./pages/MainPage";
 import { BookingProvider } from "./contexts/BookingContext";
 
 function App() {
@@ -11,10 +12,11 @@ function App() {
     <BookingProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/films" replace />} />
+          <Route path="/" element={<Navigate to="/Main" replace />} />
           <Route path="/films" element={<Main />} />
           <Route path="/movie/:id" element={<MovieDetails />} />
           <Route path="/history" element={<BookingHistory />} />
+          <Route path="/Main" element={<MainPage/>} />
         </Routes>
         
       </Router>
