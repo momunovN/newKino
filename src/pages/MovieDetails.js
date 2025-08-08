@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { BookingContext } from "../contexts/BookingContext";
 import "../components/header.scss";
 import "../App.css";
-import "../all.scss";
+import "../all.css";
 
 export default function MovieDetails() {
   const { id } = useParams();

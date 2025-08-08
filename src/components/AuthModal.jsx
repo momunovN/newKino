@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { register, login } from '../api';
-import './AuthModal.scss';
+import './AuthModal.css';
 
 const AuthModal = ({ onClose, setUser }) => {
   const [isLogin, setIsLogin] = useState(true);

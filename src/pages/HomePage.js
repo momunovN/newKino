@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "../all.scss";
+import "../all.css";
 import { Link } from "react-router-dom";
-import "../server-API/movie.scss";
+import '../Styles/HomePages.css'
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);

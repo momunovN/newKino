@@ -1,0 +1,126 @@
+@import url(../all.css);
+ .header {
+	 padding: 20px;
+	 max-width: 1200px;
+	 margin: 0 auto;
+}
+ .btn-login {
+	 border: none;
+	 color: white;
+	 width: 100px;
+	 height: 40px;
+	 background-color: rgba(255, 0, 0, 0.818);
+	 border: none;
+	 width: 100px;
+	 border-radius: 8px;
+}
+ .logo-logIn {
+	 max-width: 1440px;
+	 display: flex;
+	 justify-content: space-between;
+	 align-items: center;
+	 height: 40px;
+	 margin: 0 auto;
+}
+ .filters {
+	 display: flex;
+	 align-items: end;
+	 gap: 10px;
+}
+ .filter-group {
+	 display: flex;
+	 flex-direction: column;
+}
+ .filter-group .filter-search {
+	 width: 252.5px;
+	 height: 40px;
+	 position: relative;
+	 background: white;
+	 border-radius: 8px;
+	 border: none;
+	 outline-offset: -1px;
+	 padding: 0;
+	 padding-left: 10px;
+}
+ .filter-group .filter-search:focus {
+	 outline: none;
+}
+ .filter-group .select-genres {
+	 -webkit-appearance: none;
+	/* Убирает стандартную стрелку в Chrome/Safari */
+	 -moz-appearance: none;
+	/* Убирает стандартную стрелку в Firefox */
+	 appearance: none;
+	/* Убирает стандартную стрелку в современных браузерах */
+	 background-image: none;
+	/* Убирает стрелку в IE */
+	 width: 100%;
+	 height: 50px;
+	 padding: 10px;
+	 text-align: center;
+	 border-radius: 8px;
+	 height: 40px;
+}
+ .filter-group .select-genres:hover {
+	 animation: ButtonHover 0.2s ease forwards;
+}
+ .filter-group .select-genres:hover .book-button {
+	 color: black;
+}
+ .filter-group .select-genres:focus {
+	 outline: none;
+}
+ .filter-group .select-genres {
+	 color: #343b4c;
+	 font-size: 18px;
+	 font-family: Fira Sans;
+	 font-weight: 400;
+	 word-wrap: break-word;
+}
+ .filter-group .select-genres .option-genres {
+	 color: #343b4c;
+	 font-size: 18px;
+	 font-family: Fira Sans;
+	 font-weight: 400;
+	 line-height: 38px;
+	 word-wrap: break-word;
+}
+ .filter-group {
+	 display: flex;
+	 flex-direction: column;
+}
+ .apply-button {
+	 width: 100px;
+	 height: 40px;
+	 border-radius: 8px;
+	 border: none;
+}
+ .apply-button:hover {
+	 animation: ButtonHover 0.2s ease forwards;
+}
+ .apply-button:hover .book-button {
+	 color: black;
+}
+ .nav_header {
+	 display: flex;
+	 align-items: center;
+	 gap: 20px;
+}
+ .nav_header a {
+	 text-decoration: none;
+	 color: #bababa;
+}
+ .logo_nav {
+	 align-items: center;
+	 gap: 50px;
+	 display: flex;
+}
+ .logo_nav .logoS {
+	 font-weight: 700;
+}
+ .history_login {
+	 display: flex;
+	 align-items: center;
+	 gap: 20px;
+}
+ 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../header.scss'
+import '../header.css'
 
 
 const MovieFilter = ({ 

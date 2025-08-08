@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./header.scss";
+import "./header.css";
 import "../App.css";
 import AuthModal from "./AuthModal";
 
