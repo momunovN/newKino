@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 import "../App.css";
@@ -6,10 +6,12 @@ import AuthModal from "./AuthModal";
 
 const Header = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem("token");
     return token ? { email: localStorage.getItem("email") } : null;
   });
+  const menuRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -17,36 +19,66 @@ const Header = () => {
     setUser(null);
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="header-items">
       <div className="logo-logIn">
         <div className="logo_nav">
-          <div className="logoS">
-            <img src="" alt="" />
-            K I N O
+          <button 
+            className={`mobile-menu-btn ${isMenuOpen ? "active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div className="nav_header" ref={menuRef}>
+            <div className={`nav-links ${isMenuOpen ? "show" : ""}`}>
+              <Link to="/main" className="catalog" onClick={closeMenu}>
+                Главная
+              </Link>
+              <Link to="/films" className="catalog" onClick={closeMenu}>
+                Фильмы
+              </Link>
+              <Link to="/series" className="catalog" onClick={closeMenu}>
+                Сериалы
+              </Link>
+            </div>
           </div>
-          <div className="nav_header">
-            <Link to="/main" className="catalog">
-              Главная
-            </Link>
-            <Link to="/films" className="catalog">
-              Фильмы
-            </Link>
-
-            <a href="" className="catalog">
-              Сериалы
-            </a>
-          </div>
+          <div className="logoS">K I N O</div>
         </div>
 
         <div className="history_login">
-          <nav>
-            <button className="btn-history">
-              <Link className="link-btn" to="/history">
-                История бронирований
-              </Link>
-            </button>
-          </nav>
+          {user && (
+            <nav>
+              <button className="btn-history">
+                <Link className="link-btn" to="/history">
+                  История бронирований
+                </Link>
+              </button>
+            </nav>
+          )}
           {user ? (
             <div className="user-info">
               <span>{user.email}</span>

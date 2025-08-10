@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import "../components/header.css";
 import "../App.css";
@@ -7,6 +7,17 @@ import "../Styles/MainPage.scss";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+// Ключи для localStorage
+const CACHE_KEYS = {
+  GENRES: 'movieGenres',
+  POPULAR: 'popularMovies',
+  NEW: 'newMovies',
+  TIMESTAMP: 'moviesDataTimestamp'
+};
+
+// Время жизни кэша (1 час)
+const CACHE_EXPIRATION = 60 * 60 * 1000;
 
 const MainPage = () => {
   const [genres, setGenres] = useState([]);
@@ -19,9 +30,45 @@ const MainPage = () => {
   const BASE_URL = "https://kinopoiskapiunofficial.tech/api/v2.2";
   const MOVIES_PER_GENRE = 7;
 
+  // Загрузка данных из кэша
+  const loadFromCache = useCallback(() => {
+    const cachedGenres = localStorage.getItem(CACHE_KEYS.GENRES);
+    const cachedPopular = localStorage.getItem(CACHE_KEYS.POPULAR);
+    const cachedNew = localStorage.getItem(CACHE_KEYS.NEW);
+    const timestamp = localStorage.getItem(CACHE_KEYS.TIMESTAMP);
+
+    if (cachedGenres && cachedPopular && cachedNew && timestamp) {
+      const age = Date.now() - parseInt(timestamp);
+      if (age < CACHE_EXPIRATION) {
+        setGenres(JSON.parse(cachedGenres));
+        setPopularMovies(JSON.parse(cachedPopular));
+        setNewMovies(JSON.parse(cachedNew));
+        return true;
+      }
+    }
+    return false;
+  }, []);
+
+  // Сохранение данных в кэш
+  const saveToCache = useCallback((genresData, popularData, newData) => {
+    localStorage.setItem(CACHE_KEYS.GENRES, JSON.stringify(genresData));
+    localStorage.setItem(CACHE_KEYS.POPULAR, JSON.stringify(popularData));
+    localStorage.setItem(CACHE_KEYS.NEW, JSON.stringify(newData));
+    localStorage.setItem(CACHE_KEYS.TIMESTAMP, Date.now().toString());
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        
+        // Пытаемся загрузить из кэша
+        const hasCache = loadFromCache();
+        if (hasCache) {
+          setLoading(false);
+          return;
+        }
+
         // Получаем список жанров
         const genresResponse = await fetch(`${BASE_URL}/films/filters`, {
           headers: {
@@ -38,8 +85,6 @@ const MainPage = () => {
         const movieGenres = genresData.genres
           .filter((genre) => genre.genre !== "")
           .slice(0, 5);
-
-        setGenres(movieGenres);
 
         // Получаем фильмы по жанрам
         const [popularResults, newResults] = await Promise.all([
@@ -98,8 +143,10 @@ const MainPage = () => {
           };
         });
 
+        setGenres(movieGenres);
         setPopularMovies(popularByGenre);
         setNewMovies(newByGenre);
+        saveToCache(movieGenres, popularByGenre, newByGenre);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -109,7 +156,7 @@ const MainPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [loadFromCache, saveToCache]);
 
   const sliderSettings = {
     dots: false,
@@ -182,6 +229,7 @@ const MainPage = () => {
     );
   }
 
+
   return (
     <div className="Main">
       <header className="header">
@@ -237,32 +285,68 @@ const MainPage = () => {
   );
 };
 
-const MovieCard = ({ film, isNew = false }) => (
-  <div className="movie-card">
-    <Link to={`/movie/${film.kinopoiskId || film.filmId}`} className="movie-link">
-      <div className="poster-container">
-        <img
-          src={film.posterUrlPreview || "https://via.placeholder.com/150x225?text=No+poster"}
-          alt={film.nameRu || film.nameEn || "Название фильма"}
-          className="movie-poster"
-          onError={(e) => {
-            e.target.src = "https://via.placeholder.com/150x225?text=No+poster";
-          }}
-          loading="lazy"
-        />
-        <div className="movie-overlay">
-          {isNew && <span className="new-badge">NEW</span>}
-          <span className="rating-badge">
-            {film.ratingKinopoisk || film.rating || "—"}
-          </span>
+const MovieCard = ({ film, isNew = false }) => {
+  const navigate = useNavigate();
+  const [clickAllowed, setClickAllowed] = useState(true);
+  const [startCoords, setStartCoords] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    setStartCoords({ x: e.clientX, y: e.clientY });
+    setClickAllowed(true);
+  };
+
+  const handleMouseMove = (e) => {
+    // Если движение мыши больше 5px, блокируем клик
+    const dx = Math.abs(e.clientX - startCoords.x);
+    const dy = Math.abs(e.clientY - startCoords.y);
+    if (dx > 5 || dy > 5) {
+      setClickAllowed(false);
+    }
+  };
+
+  const handleClick = (e) => {
+    if (!clickAllowed) {
+      e.preventDefault();
+      return;
+    }
+    navigate(`/movie/${film.kinopoiskId || film.filmId}`);
+  };
+
+  return (
+    <div 
+      className="movie-card"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+    >
+      <Link 
+        to={`/movie/${film.kinopoiskId || film.filmId}`} 
+        onClick={handleClick}
+        className="movie-link"
+      >
+        <div className="poster-container">
+          <img
+            src={film.posterUrlPreview || "https://via.placeholder.com/150x225?text=No+poster"}
+            alt={film.nameRu || film.nameEn || "Название фильма"}
+            className="movie-poster"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/150x225?text=No+poster";
+            }}
+            loading="lazy"
+          />
+          <div className="movie-overlay">
+            {isNew && <span className="new-badge">NEW</span>}
+            <span className="rating-badge">
+              {film.ratingKinopoisk || film.rating || "—"}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="movie-info">
-        <h4 className="movie-title">{film.nameRu || film.nameEn || "Без названия"}</h4>
-        {!isNew && <p className="movie-year">{film.year || "—"}</p>}
-      </div>
-    </Link>
-  </div>
-);
+        <div className="movie-info">
+          <h4 className="movie-title">{film.nameRu || film.nameEn || "Без названия"}</h4>
+          {!isNew && <p className="movie-year">{film.year || "—"}</p>}
+        </div>
+      </Link>
+    </div>
+  );
+};
 
 export default MainPage;

@@ -1,0 +1,125 @@
+/* pages/MovieDetails.css */
+.movie-details {
+  padding: 30px 0;
+}
+
+.detailes-item {
+  display: flex;
+  gap: 40px;
+}
+
+.detail-poster {
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.detail-info {
+  flex: 1;
+}
+
+.detail-info h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #333;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  position: relative;
+}
+
+.tab-button.active {
+  color: var(--text-color);
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.tab-content {
+  margin-bottom: 30px;
+}
+
+.booking-form {
+  background-color: var(--bg-secondary);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-top: 30px;
+}
+
+.booking-form h2 {
+  margin-bottom: 15px;
+}
+
+.inp_form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.inp_form input {
+  padding: 12px 15px;
+  border-radius: var(--border-radius);
+  border: 1px solid #333;
+  background-color: var(--dark-color);
+  color: var(--text-color);
+}
+
+.booking-form button {
+  padding: 12px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+  .detailes-item {
+    flex-direction: column;
+  }
+  
+  .detail-poster {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .tab-button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .detail-info h1 {
+    font-size: 24px;
+  }
+  
+  .booking-form {
+    padding: 15px;
+  }
+}

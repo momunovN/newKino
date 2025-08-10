@@ -1,126 +1,197 @@
-@import url(../all.css);
- .header {
-	 padding: 20px;
-	 max-width: 1200px;
-	 margin: 0 auto;
+/* components/header.css */
+.header-items {
+  background-color: var(--dark-color);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--box-shadow);
 }
- .btn-login {
-	 border: none;
-	 color: white;
-	 width: 100px;
-	 height: 40px;
-	 background-color: rgba(255, 0, 0, 0.818);
-	 border: none;
-	 width: 100px;
-	 border-radius: 8px;
+
+.logo-logIn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
 }
- .logo-logIn {
-	 max-width: 1440px;
-	 display: flex;
-	 justify-content: space-between;
-	 align-items: center;
-	 height: 40px;
-	 margin: 0 auto;
+
+.logo_nav {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: flex-start;
 }
- .filters {
-	 display: flex;
-	 align-items: end;
-	 gap: 10px;
+
+.logoS {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
- .filter-group {
-	 display: flex;
-	 flex-direction: column;
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 101;
 }
- .filter-group .filter-search {
-	 width: 252.5px;
-	 height: 40px;
-	 position: relative;
-	 background: white;
-	 border-radius: 8px;
-	 border: none;
-	 outline-offset: -1px;
-	 padding: 0;
-	 padding-left: 10px;
+
+.mobile-menu-btn span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-color);
+  margin: 5px 0;
+  transition: var(--transition);
 }
- .filter-group .filter-search:focus {
-	 outline: none;
+
+.mobile-menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
 }
- .filter-group .select-genres {
-	 -webkit-appearance: none;
-	/* Убирает стандартную стрелку в Chrome/Safari */
-	 -moz-appearance: none;
-	/* Убирает стандартную стрелку в Firefox */
-	 appearance: none;
-	/* Убирает стандартную стрелку в современных браузерах */
-	 background-image: none;
-	/* Убирает стрелку в IE */
-	 width: 100%;
-	 height: 50px;
-	 padding: 10px;
-	 text-align: center;
-	 border-radius: 8px;
-	 height: 40px;
+
+.mobile-menu-btn.active span:nth-child(2) {
+  opacity: 0;
 }
- .filter-group .select-genres:hover {
-	 animation: ButtonHover 0.2s ease forwards;
+
+.mobile-menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
 }
- .filter-group .select-genres:hover .book-button {
-	 color: black;
+
+.nav_header {
+  display: flex;
 }
- .filter-group .select-genres:focus {
-	 outline: none;
+
+.nav-links {
+  display: flex;
+  gap: 25px;
 }
- .filter-group .select-genres {
-	 color: #343b4c;
-	 font-size: 18px;
-	 font-family: Fira Sans;
-	 font-weight: 400;
-	 word-wrap: break-word;
+
+.nav-links a {
+  color: var(--text-secondary);
+  font-weight: 500;
+  position: relative;
+  padding: 5px 0;
+  transition: var(--transition);
 }
- .filter-group .select-genres .option-genres {
-	 color: #343b4c;
-	 font-size: 18px;
-	 font-family: Fira Sans;
-	 font-weight: 400;
-	 line-height: 38px;
-	 word-wrap: break-word;
+
+.nav-links a:hover {
+  color: var(--text-color);
 }
- .filter-group {
-	 display: flex;
-	 flex-direction: column;
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: var(--transition);
 }
- .apply-button {
-	 width: 100px;
-	 height: 40px;
-	 border-radius: 8px;
-	 border: none;
+
+.nav-links a:hover::after {
+  width: 100%;
 }
- .apply-button:hover {
-	 animation: ButtonHover 0.2s ease forwards;
+
+.history_login {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
- .apply-button:hover .book-button {
-	 color: black;
+
+.btn-login, .btn-history {
+  padding: 8px 20px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
 }
- .nav_header {
-	 display: flex;
-	 align-items: center;
-	 gap: 20px;
+
+.btn-login:hover, .btn-history:hover {
+  background-color: #b2070f;
+  transform: translateY(-2px);
 }
- .nav_header a {
-	 text-decoration: none;
-	 color: #bababa;
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
- .logo_nav {
-	 align-items: center;
-	 gap: 50px;
-	 display: flex;
+
+.user-info span {
+  color: var(--text-secondary);
 }
- .logo_nav .logoS {
-	 font-weight: 700;
+
+.link-btn {
+  color: white;
+  text-decoration: none;
 }
- .history_login {
-	 display: flex;
-	 align-items: center;
-	 gap: 20px;
+
+/* Адаптивность */
+@media (max-width: 992px) {
+  .nav-links {
+    gap: 15px;
+  }
 }
- 
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .nav_header {
+    position: relative;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 70%;
+    height: 100vh;
+    background-color: var(--dark-color);
+    flex-direction: column;
+    padding: 80px 20px 20px;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    z-index: 100;
+  }
+  
+  .nav-links.show {
+    left: 0;
+  }
+  
+  .logoS {
+    position: static;
+    transform: none;
+    margin: 0 auto;
+    order: 1;
+  }
+  
+  .logo_nav {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-links {
+    gap: 10px;
+    font-size: 14px;
+  }
+  
+  .btn-login, .btn-history {
+    padding: 6px 15px;
+    font-size: 14px;
+  }
+}

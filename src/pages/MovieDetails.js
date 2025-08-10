@@ -7,6 +7,7 @@ import { BookingContext } from "../contexts/BookingContext";
 import "../components/header.scss";
 import "../App.css";
 import "../all.css";
+import "../Styles/MovieDetails.css"
 
 export default function MovieDetails() {
   const { id } = useParams();

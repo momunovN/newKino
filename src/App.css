@@ -1,25 +1,107 @@
-*,
-**::after,
-**::before{
-    
-    margin-left: 140px;
-    margin-right: 140px;
-    margin: 0 auto;
-    padding: 0;
+/* App.css */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.container{
-    max-width: 1440px;
-    
-    margin: 0 auto;
-    padding: 0;
+.main {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.error-screen, .loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.error-screen h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.error-screen button {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
-body{
-    background-color: #000;
-    color: white;
+/* pages/BookingHistory.css */
+.history-page {
+  padding: 30px 0;
 }
 
+.history-page h1 {
+  margin-bottom: 30px;
+  text-align: center;
+}
 
+.bookings-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
 
+.booking-card {
+  background-color: var(--bg-secondary);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.booking-card h3 {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.booking-card p {
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  background-color: var(--dark-color);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  background-color: #333;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .bookings-list {
+    grid-template-columns: 1fr;
+  }
+}
