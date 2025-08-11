@@ -12,11 +12,11 @@ function App() {
     <BookingProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/Main" replace />} />
-          <Route path="/films" element={<Main />} />
+          <Route path="/" element={<Navigate to="/Главная" replace />} />
+          <Route path="/Фильмы" element={<Main />} />
           <Route path="/movie/:id" element={<MovieDetails />} />
-          <Route path="/history" element={<BookingHistory />} />
-          <Route path="/Main" element={<MainPage/>} />
+          <Route path="/История" element={<BookingHistory />} />
+          <Route path="/Главная" element={<MainPage/>} />
         </Routes>
         
       </Router>

@@ -55,13 +55,13 @@ const Header = () => {
           </button>
           <div className="nav_header" ref={menuRef}>
             <div className={`nav-links ${isMenuOpen ? "show" : ""}`}>
-              <Link to="/main" className="catalog" onClick={closeMenu}>
+              <Link to="/Главная" className="catalog" onClick={closeMenu}>
                 Главная
               </Link>
-              <Link to="/films" className="catalog" onClick={closeMenu}>
+              <Link to="/Фильмы" className="catalog" onClick={closeMenu}>
                 Фильмы
               </Link>
-              <Link to="/series" className="catalog" onClick={closeMenu}>
+              <Link to="/Сериалы" className="catalog" onClick={closeMenu}>
                 Сериалы
               </Link>
             </div>
