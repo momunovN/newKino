@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import "../components/header.css";
@@ -8,68 +8,23 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Ключи для localStorage
-const CACHE_KEYS = {
-  GENRES: 'movieGenres',
-  POPULAR: 'popularMovies',
-  NEW: 'newMovies',
-  TIMESTAMP: 'moviesDataTimestamp'
-};
-
-// Время жизни кэша (1 час)
-const CACHE_EXPIRATION = 60 * 60 * 1000;
-
 const MainPage = () => {
   const [genres, setGenres] = useState([]);
-  const [popularMovies, setPopularMovies] = useState({});
-  const [newMovies, setNewMovies] = useState({});
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [newMovies, setNewMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState("all");
 
   const API_KEY = "31b8142c-7c84-42d7-ba58-c5866aa1bc7b";
   const BASE_URL = "https://kinopoiskapiunofficial.tech/api/v2.2";
-  const MOVIES_PER_GENRE = 7;
-
-  // Загрузка данных из кэша
-  const loadFromCache = useCallback(() => {
-    const cachedGenres = localStorage.getItem(CACHE_KEYS.GENRES);
-    const cachedPopular = localStorage.getItem(CACHE_KEYS.POPULAR);
-    const cachedNew = localStorage.getItem(CACHE_KEYS.NEW);
-    const timestamp = localStorage.getItem(CACHE_KEYS.TIMESTAMP);
-
-    if (cachedGenres && cachedPopular && cachedNew && timestamp) {
-      const age = Date.now() - parseInt(timestamp);
-      if (age < CACHE_EXPIRATION) {
-        setGenres(JSON.parse(cachedGenres));
-        setPopularMovies(JSON.parse(cachedPopular));
-        setNewMovies(JSON.parse(cachedNew));
-        return true;
-      }
-    }
-    return false;
-  }, []);
-
-  // Сохранение данных в кэш
-  const saveToCache = useCallback((genresData, popularData, newData) => {
-    localStorage.setItem(CACHE_KEYS.GENRES, JSON.stringify(genresData));
-    localStorage.setItem(CACHE_KEYS.POPULAR, JSON.stringify(popularData));
-    localStorage.setItem(CACHE_KEYS.NEW, JSON.stringify(newData));
-    localStorage.setItem(CACHE_KEYS.TIMESTAMP, Date.now().toString());
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         
-        // Пытаемся загрузить из кэша
-        const hasCache = loadFromCache();
-        if (hasCache) {
-          setLoading(false);
-          return;
-        }
-
-        // Получаем список жанров
+        // Получаем список популярных жанров
         const genresResponse = await fetch(`${BASE_URL}/films/filters`, {
           headers: {
             "X-API-KEY": API_KEY,
@@ -82,133 +37,94 @@ const MainPage = () => {
         }
 
         const genresData = await genresResponse.json();
-        const movieGenres = genresData.genres
-          .filter((genre) => genre.genre !== "")
-          .slice(0, 5);
+        const popularGenres = genresData.genres
+          .filter(genre => genre.genre !== "")
+          .slice(0, 5); // Берем топ-5 жанров
 
-        // Получаем фильмы по жанрам
-        const [popularResults, newResults] = await Promise.all([
-          Promise.all(
-            movieGenres.map(async (genre) => {
-              const response = await fetch(
-                `${BASE_URL}/films?genres=${genre.id}&order=RATING&type=ALL&ratingFrom=7&ratingTo=10&page=1`,
-                {
-                  headers: {
-                    "X-API-KEY": API_KEY,
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-              if (!response.ok) return { genreId: genre.id, items: [] };
-              const data = await response.json();
-              return {
-                genreId: genre.id,
-                items: data.items.slice(0, MOVIES_PER_GENRE),
-              };
-            })
-          ),
-          Promise.all(
-            movieGenres.map(async (genre) => {
-              const response = await fetch(
-                `${BASE_URL}/films?genres=${genre.id}&order=NUM_VOTE&type=ALL&yearFrom=2023&page=1`,
-                {
-                  headers: {
-                    "X-API-KEY": API_KEY,
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-              if (!response.ok) return { genreId: genre.id, items: [] };
-              const data = await response.json();
-              return {
-                genreId: genre.id,
-                items: data.items.slice(0, MOVIES_PER_GENRE),
-              };
-            })
-          ),
+        setGenres(popularGenres);
+
+        // Получаем популярные и новые фильмы
+        const [popularRes, newRes] = await Promise.all([
+          fetch(`${BASE_URL}/films?order=RATING&type=ALL&ratingFrom=7&ratingTo=10&yearFrom=2010&yearTo=3000&page=1`, {
+            headers: {
+              "X-API-KEY": API_KEY,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch(`${BASE_URL}/films?order=NUM_VOTE&type=ALL&yearFrom=2023&page=1`, {
+            headers: {
+              "X-API-KEY": API_KEY,
+              "Content-Type": "application/json",
+            },
+          })
         ]);
 
-        // Обрабатываем результаты
-        const popularByGenre = {};
-        const newByGenre = {};
+        const popularData = await popularRes.json();
+        const newData = await newRes.json();
 
-        movieGenres.forEach((genre, index) => {
-          popularByGenre[genre.id] = {
-            genre: genre.genre,
-            films: popularResults[index].items || [],
-          };
-          newByGenre[genre.id] = {
-            genre: genre.genre,
-            films: newResults[index].items || [],
-          };
-        });
-
-        setGenres(movieGenres);
-        setPopularMovies(popularByGenre);
-        setNewMovies(newByGenre);
-        saveToCache(movieGenres, popularByGenre, newByGenre);
+        setPopularMovies(popularData.items || []);
+        setNewMovies(newData.items || []);
         setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError(error.message);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err.message);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [loadFromCache, saveToCache]);
+  }, []);
 
   const sliderSettings = {
     dots: false,
     infinite: true,
     speed: 600,
-    slidesToShow: Math.min(5, MOVIES_PER_GENRE),
+    slidesToShow: 5,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
     pauseOnHover: true,
     cssEase: "cubic-bezier(0.645, 0.045, 0.355, 1)",
     arrows: true,
-    centerMode: true,
-    centerPadding: "60px",
-    draggable: true,
-    swipe: true,
-    swipeToSlide: true,
-    touchThreshold: 10,
-    waitForAnimate: false,
-    edgeFriction: 0.15,
     responsive: [
       {
         breakpoint: 1200,
         settings: {
-          centerPadding: "40px",
-          slidesToShow: Math.min(4, MOVIES_PER_GENRE),
+          slidesToShow: 4,
         },
       },
       {
         breakpoint: 992,
         settings: {
-          centerPadding: "30px",
-          slidesToShow: Math.min(3, MOVIES_PER_GENRE),
-          centerMode: false,
+          slidesToShow: 3,
         },
       },
       {
         breakpoint: 768,
         settings: {
-          centerPadding: "20px",
-          slidesToShow: Math.min(2, MOVIES_PER_GENRE),
+          slidesToShow: 2,
         },
       },
       {
         breakpoint: 576,
         settings: {
-          centerPadding: "10px",
           slidesToShow: 1,
         },
       },
     ],
   };
+
+  const filteredPopularMovies = selectedGenre === "all" 
+    ? popularMovies 
+    : popularMovies.filter(movie => 
+        movie.genres?.some(g => g.genre.toLowerCase() === selectedGenre.toLowerCase())
+      );
+
+  const filteredNewMovies = selectedGenre === "all" 
+    ? newMovies 
+    : newMovies.filter(movie => 
+        movie.genres?.some(g => g.genre.toLowerCase() === selectedGenre.toLowerCase())
+      );
 
   if (loading) {
     return (
@@ -229,7 +145,6 @@ const MainPage = () => {
     );
   }
 
-
   return (
     <div className="Main">
       <header className="header">
@@ -240,44 +155,54 @@ const MainPage = () => {
       
       <main className="MainPage">
         <div className="container">
-          <section className="movies-section">
-            <h2 className="section-title">Популярные фильмы по жанрам</h2>
-            {genres.map((genre) => (
-              <div key={`popular-${genre.id}`} className="genre-block">
-                <h3 className="genre-title">{genre.genre}</h3>
-                {popularMovies[genre.id]?.films?.length > 0 ? (
-                  <div className="slider-container">
-                    <Slider {...sliderSettings}>
-                      {popularMovies[genre.id].films.map((film) => (
-                        <MovieCard key={film.kinopoiskId || film.filmId} film={film} />
-                      ))}
-                    </Slider>
-                  </div>
-                ) : (
-                  <p className="no-movies">Нет фильмов в этом жанре</p>
-                )}
-              </div>
+          {/* Фильтр по жанрам */}
+          <div className="genre-filter">
+            <button 
+              className={`genre-tag ${selectedGenre === "all" ? "active" : ""}`}
+              onClick={() => setSelectedGenre("all")}
+            >
+              Все жанры
+            </button>
+            {genres.map(genre => (
+              <button
+                key={genre.id}
+                className={`genre-tag ${selectedGenre === genre.genre.toLowerCase() ? "active" : ""}`}
+                onClick={() => setSelectedGenre(genre.genre.toLowerCase())}
+              >
+                {genre.genre}
+              </button>
             ))}
+            <Link to="/films" className="more-films-btn">
+              Еще фильмы →
+            </Link>
+          </div>
+
+          {/* Популярные фильмы */}
+          <section className="movies-section">
+            <h2 className="section-title">Популярные фильмы</h2>
+            {filteredPopularMovies.length > 0 ? (
+              <Slider {...sliderSettings}>
+                {filteredPopularMovies.map(film => (
+                  <MovieCard key={film.kinopoiskId || film.filmId} film={film} />
+                ))}
+              </Slider>
+            ) : (
+              <p className="no-movies">Нет фильмов в выбранном жанре</p>
+            )}
           </section>
 
+          {/* Новые фильмы */}
           <section className="movies-section">
-            <h2 className="section-title">Новые фильмы по жанрам</h2>
-            {genres.map((genre) => (
-              <div key={`new-${genre.id}`} className="genre-block">
-                <h3 className="genre-title">{genre.genre}</h3>
-                {newMovies[genre.id]?.films?.length > 0 ? (
-                  <div className="slider-container">
-                    <Slider {...sliderSettings}>
-                      {newMovies[genre.id].films.map((film) => (
-                        <MovieCard key={film.kinopoiskId || film.filmId} film={film} isNew />
-                      ))}
-                    </Slider>
-                  </div>
-                ) : (
-                  <p className="no-movies">Нет новых фильмов в этом жанре</p>
-                )}
-              </div>
-            ))}
+            <h2 className="section-title">Новые фильмы</h2>
+            {filteredNewMovies.length > 0 ? (
+              <Slider {...sliderSettings}>
+                {filteredNewMovies.map(film => (
+                  <MovieCard key={film.kinopoiskId || film.filmId} film={film} isNew />
+                ))}
+              </Slider>
+            ) : (
+              <p className="no-movies">Нет новых фильмов в выбранном жанре</p>
+            )}
           </section>
         </div>
       </main>
@@ -291,6 +216,7 @@ const MovieCard = ({ film, isNew = false }) => {
   const [startCoords, setStartCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = (e) => {
+    // Запоминаем начальные координаты при нажатии мыши
     setStartCoords({ x: e.clientX, y: e.clientY });
     setClickAllowed(true);
   };
@@ -342,7 +268,7 @@ const MovieCard = ({ film, isNew = false }) => {
         </div>
         <div className="movie-info">
           <h4 className="movie-title">{film.nameRu || film.nameEn || "Без названия"}</h4>
-          {!isNew && <p className="movie-year">{film.year || "—"}</p>}
+          <p className="movie-year">{film.year || "—"}</p>
         </div>
       </Link>
     </div>
