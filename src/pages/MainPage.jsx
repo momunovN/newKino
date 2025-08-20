@@ -172,7 +172,7 @@ const MainPage = () => {
                 {genre.genre}
               </button>
             ))}
-            <Link to="/films" className="more-films-btn">
+            <Link to="/Фильмы" className="more-films-btn">
               Еще фильмы →
             </Link>
           </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../all.css";
 import { Link } from "react-router-dom";
-import '../Styles/HomePages.css'
+import "../Styles/HomePages.css";
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
@@ -81,21 +81,24 @@ const HomePage = () => {
 
   return (
     <div className="App">
+      {error && <div className="error-message">{error}</div>}
       <div className="title-main">
         <h1>Фильмы</h1>
-        
       </div>
-
-      {error && <div className="error-message">{error}</div>}
-
       <div className="movies-container">
+
+
+        
         {displayedMovies.length > 0
           ? displayedMovies.map((movie) => (
               <div
                 key={movie.kinopoiskId || movie.filmId}
                 className="movie-card"
               >
-                <Link className="link-btn" to={`/movie/${movie.kinopoiskId || movie.filmId}`}>
+                <Link
+                  className="link-btn"
+                  to={`/movie/${movie.kinopoiskId || movie.filmId}`}
+                >
                   <img
                     src={movie.posterUrl}
                     alt={
@@ -112,15 +115,20 @@ const HomePage = () => {
                   />
                 </Link>
                 <div className="movie-info">
-                  <Link className="link-btn" to={`/movie/${movie.kinopoiskId || movie.filmId}`}>
-                    <h2>{movie.nameRu || movie.nameEn || movie.nameOriginal}</h2>
+                  <Link
+                    className="link-btn"
+                    to={`/movie/${movie.kinopoiskId || movie.filmId}`}
+                  >
+                    <h2>
+                      {movie.nameRu || movie.nameEn || movie.nameOriginal}
+                    </h2>
                   </Link>
                   <p>Год: {movie.year}</p>
                   {movie.genres && (
                     <p>Жанр: {movie.genres.map((g) => g.genre).join(", ")}</p>
                   )}
                   <button className="ticket-btn">
-                    <Link 
+                    <Link
                       to={`/movie/${movie.kinopoiskId || movie.filmId}`}
                       className="book-button"
                     >
@@ -138,7 +146,12 @@ const HomePage = () => {
       </div>
 
       <div className="load-more-container">
-        {isLoading && <div className="loading">Загрузка...</div>}
+        {isLoading && (
+          <div className="loading-screen">
+            <div className="spinner"></div>
+            <p>Загрузка данных...</p>
+          </div>
+        )}
         {canShowMore && !isLoading && (
           <button onClick={showMoreFiltered} className="load-more-button">
             Показать еще 3 фильма
